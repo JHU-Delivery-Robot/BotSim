@@ -64,8 +64,8 @@ public:
      * @param dist true distance to obstacle
      * @return float sampled from distribution
      */
-    Length sampleNormal(Length dist); // 
-    Length sampleGlitch(Length dist); // obstacle map --> within range, within dist + gaussian noise; else max value
+    Length sampleNormal(Length dist); // obstacle map --> within range, within dist + gaussian noise; else max value
+    Length sampleGlitch(); 
     bool glitch(); // call first -> if T call sampleGlitch else call sampleNormal; ultracount sampleNorm 15 deg, Lidar 720 deg
 };
 
@@ -80,8 +80,9 @@ class SensorGen {
 protected:
     BeamModel beam; /**< internal beammodel used by the sensor */
     ObstMap& map;  /**< obstacle map referenced by the sensor */
+    const Length range;  /**< obstacle map referenced by the sensor */
 public:
-    SensorGen(ObstMap& map, BeamModel& mdl);
+    SensorGen(ObstMap& map, BeamModel& mdl, Length max);
 };
 
 /**
@@ -91,7 +92,7 @@ class ConeSensor : public SensorGen {
 protected:
     Angle fov;  /**< obstacle map referenced by the sensor */
 public:
-    ConeSensor(ObstMap& map, Angle fov, BeamModel& mdl);
+    ConeSensor(ObstMap& map, BeamModel& mdl, Length max, Angle fov);
     /**
      * Generate ultrasound reading. (Use BeamModel in lieu of sensor statistics)
      *   @param x x coordinate of sensor in obstacle map
@@ -108,7 +109,7 @@ public:
  */
 class Lidar : public SensorGen {
 public:
-    Lidar(ObstMap& map, BeamModel& mdl);
+    Lidar(ObstMap& map, BeamModel& mdl, Length max);
     /**
      * Generate Lidar readings and write to array. (Use BeamModel in lieu of sensor statistics)
      * @param readings pointer to array to write Lidar readings to
@@ -123,7 +124,7 @@ public:
  */
 class UltrasoundSensor : public ConeSensor {
 public:
-    UltrasoundSensor(ObstMap& map, Angle fov, BeamModel& mdl);
+    UltrasoundSensor(ObstMap& map, BeamModel& mdl, Length max, Angle fov);
     /**
      * Generate ultrasound reading. (Use BeamModel in lieu of sensor statistics)
      *   @param x x coordinate of sensor in obstacle map
