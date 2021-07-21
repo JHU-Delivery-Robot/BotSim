@@ -1,5 +1,5 @@
-#ifndef _MOTOR_HAL_H_
-#define _MOTOR_HAL_H_
+#ifndef _MOTOR_HAL_HPP_
+#define _MOTOR_HAL_HPP_
 
 #include <pthread.h>
 
@@ -16,10 +16,14 @@ enum MotorStatus {
 class Motor {
 private:
     pthread_mutex_t lock_motor;
+    Coord r;
+    Angle theta;
 public:
-    Motor(unsigned int channel);
+    Motor(unsigned int channel, Coord R, Angle Theta);
     int set_speed(float speed);
     float get_speed();
+    Coord get_r();
+    Angle get_theta();
     void reset_odometry();
     void set_odometry_period(float secs);
     OdomReading get_odometry_reading();
